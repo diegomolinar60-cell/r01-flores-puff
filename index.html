@@ -234,7 +234,9 @@ function buildViews(root, m) {
   const fit = Math.max((size.y * 0.5) / Math.tan(vHalf) * 1.55, (Math.max(size.x, size.z) * 0.5) / Math.tan(hHalf) * (narrow ? 1.08 : 1.2));
   if (narrow) c.y += size.y * 0.12; // en teléfono deja espacio a la barra de abajo
   const around = (deg, d = fit, t = c, dy = 0.06) => { const a = THREE.MathUtils.degToRad(deg); return { pos: new THREE.Vector3(t.x + Math.sin(a) * d, t.y + dy, t.z + Math.cos(a) * d), target: t.clone() }; };
-  const det = ([x, y, z, d, deg], dy) => around(deg, d, new THREE.Vector3(x, y, z), dy);
+  // En pantallas angostas (teléfono vertical) el acercamiento se aleja para que la pieza completa quepa a lo ancho.
+  const dk = narrow ? Math.min(2.6, 0.9 / camera.aspect) : 1;
+  const det = ([x, y, z, d, deg], dy) => around(deg, d * dk, new THREE.Vector3(x, y, z), dy);
   VIEWS = { frente: around(0), espalda: around(180), 'tres-cuartos': around(35), perfil: around(90), puff: det(m.puff, 0.02), bordado: det(m.bordado, 0.01) };
 }
 
